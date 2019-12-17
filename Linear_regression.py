@@ -33,12 +33,12 @@ class LinReg:
     def y_cost(self):
         rss = np.zeros(self.col1, dtype=np.float64)
         rss = self.y - self.y_pred()
-        rss = np.dot(rss, rss) + self.lamb * np.sum(np.square(self.wt))
+        rss = np.dot(rss, rss) + self.lamb * np.sum(np.square(self.wt))/2
         return np.mean(rss)
 
     def update(self):
         self.temp = np.zeros(self.col1, dtype=np.float64)
-        self.temp = np.dot((self.y_pred() - self.y), self.x.T) / self.m
+        self.temp = np.dot((self.y_pred() - self.y), self.x.T) / self.m + self.lamb * np.mean(self.wt)
         self.wt = self.wt - 0.01 * self.temp
 
     def train(self, epoch=1000):
