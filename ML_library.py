@@ -80,7 +80,7 @@ class LinReg:
         accu = np.zeros(epoch.shape[0], dtype=float)
         for i in range(epoch.shape[0]):
             self.train(epoch[i])
-            accu[i] = 100 - np.mean(np.abs(self.y_pred() - self.y) // np.abs(self.y)) * 100
+            accu[i] = np.mean(np.square(self.y_pred() - self.y))
         plt.xlabel = 'Epoch'
         plt.ylabel = 'Accuracy'
         plt.plot(epoch, accu)
