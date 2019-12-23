@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 
 class LinReg:
@@ -73,7 +74,7 @@ class LinReg:
                 self.y = np.array(self.y_split[i])
                 self.train(10)
 
-    def model_accu_vs_epoch(self, ll, ul, step):  # Plot showing accuracy of model vs epoch attained for taraining
+    def model_cost_vs_epoch(self, ll, ul, step):  # Plot showing accuracy of model vs epoch attained for taraining
         self.wt = np.zeros((1, self.col1), dtype=float)
         self.bias = 0.00
         epoch = np.arange(int(ll), int(ul), int(step))
@@ -142,6 +143,16 @@ class LogReg:
         self.temp = np.zeros(self.col1, dtype=np.float64)
         self.x_prod = np.prod(self.x, axis=0)
         self.x_prod = np.reshape(self.x_prod, (1, self.m))
+        self.xl_split = np.array_split(self.x,
+                                       2)  # dividing training dataset into training and cross validation dataset
+        self.xp_split = np.array_split(self.x_prod, 2)
+        self.x = self.xl_split[0]
+        self.xcv = self.xl_split[1]
+        self.x_prodcv = self.xp_split[1]
+        self.x_prod = self.xp_split[0]
+        self.y_split = np.array_split(self.y, 2)
+        self.y = self.y_split[0]
+        self.ycv = self.y_split[1]
 
     def y_pred_lin(self):  # simple linear hypothesis
         t = np.empty((self.j, self.m), dtype=np.float64)
@@ -189,15 +200,27 @@ class LogReg:
             self.update_lin()
         return self.wt1
 
-    def batch_train(self, epoch):
-        n = int(self.m / 50)
-        self.x_split = np.array_split(self.x, n, axis=1)
-        self.y_split = np.array_split(self.y, n, axis=1)
-        for j in range(epoch):
+    def batch_train_lin(self, epoch):
+        n = int(self.m / 50) + 1
+        self.x_split1 = np.array_split(self.x, n, axis=1)
+        self.y_split1 = np.array_split(self.y, n, axis=1)
+        for j in range(int(epoch)):
             for i in range(n):
-                self.x = np.array(self.x_split[i])
-                self.y = np.array(self.y_split[i])
-                self.train_model_lin(5)
+                self.x = np.array(self.x_split1[i])
+                self.y = np.array(self.y_split1[i])
+                self.train_model_lin(10)
+
+    def batch_train_quad(self, epoch):
+        n = int(self.m / 50) + 1
+        self.x_split1 = np.array_split(self.x, n, axis=1)
+        self.y_split1 = np.array_split(self.y, n, axis=1)
+        self.x_prod_split = np.array_split(self.x_prod, n, axis=1)
+        for j in range(int(epoch)):
+            for i in range(n):
+                self.x = np.array(self.x_split1[i])
+                self.y = np.array(self.y_split1[i])
+                self.x_prod = np.array(self.x_prod[i])
+                self.train_model_quad(10)
 
     def train_model_quad(self, epoch):
         for i in range(epoch):
@@ -233,10 +256,12 @@ class LogReg:
 
     def y_test_pred(self):
         try:
-            t = np.matmul(self.wt1, self.x_test)
+            x1 = np.matmul(self.wt1, self.x_test)
+            x2 = np.matmul(self.wt2, np.square(self.x_test))
+            x3 = np.matmul(self.wt3, self.x_prod_test)
+            t = x1 + x2 + x3
         except:
-            t = np.matmul(self.wt1, self.x_test) + np.matmul(self.wt2, np.square(self.x_test)) + np.matmul(self.wt3,
-                                                                                                           self.x_prod_test)
+            t = np.matmul(self.wt1, self.x_test)
         return 1 / (1 + np.e ** -t)
 
     def test_accu(self):
@@ -244,19 +269,31 @@ class LogReg:
         print(accu)
         return accu
 
-    def model_accu_vs_epoch(self):
-        epoch = np.arange(100, 10000, 500)
+    def model_accu_vs_epoch(self, lr, ur, step):  # plots learning curve depicting accuray of model
+        epoch = np.arange(int(lr), int(ur), int(step))
         accu = np.zeros(epoch.shape[0], dtype=float)
         try:
             for i in range(epoch.shape[0]):
-                self.train_model_quad(epoch[i])
+                self.batch_train_quad(epoch[i])
                 accu[i] = np.mean(np.abs(self.y_pred_quad() - self.y)) * (-100) + 100
         except:
             for i in range(epoch.shape[0]):
-                self.train_model_lin(epoch[i])
-                accu[i] = np.mean(np.abs(self.y_pred_lin() - self.y)) * 100
+                self.batch_train_lin(epoch[i])
+                accu[i] = np.mean(np.abs(self.y_pred_lin() - self.y)) * (-100) + 100
 
         plt.gcf().canvas.set_window_title('Learning_Curve')
         plt.xlabel = 'Epoch'
         plt.ylabel = 'Accuracy'
         plt.plot(epoch, accu)
+
+    def cost_cv_lin(self):  # cross validation cost on quadratic hypothesis
+        y = np.dot(self.wt1, self.xcv)
+        cost = np.mean(np.square(y - self.ycv))
+        return cost
+
+    def cost_cv_quad(self):  # cross validation cost on quadratic hypothesis
+        x1 = np.dot(self.wt1, self.xcv)
+        x2 = np.dot(self.wt2, np.square(self.xcv))
+        x3 = np.dot(self.wt3, self.x_prodcv)
+        cost = np.mean(np.square(x1 + x2 + x3 - self.ycv))
+        return cost
