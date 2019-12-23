@@ -49,7 +49,7 @@ class LinReg:
         self.wt = self.wt - self.l_rate * self.temp
         self.bias -= np.sum(self.y_pred() - self.y) * self.l_rate / self.m
 
-    def train(self, epoch=100):  # model training function with traditional..
+    def train(self, epoch=1000):  # model training function with traditional..
         for j in range(int(epoch)):  # gradient descent
             self.y_pred()
             self.y_cost()
@@ -57,7 +57,7 @@ class LinReg:
             self.wt0 = self.wt
         return self.wt
 
-    def batch_train(self, epoch=1000):  # model training function with batch ...
+    def batch_train(self, epoch=100):  # model training function with batch ...
         n = int(self.m / 50) + 1  # gradient descent
 
         try:
@@ -96,11 +96,10 @@ class LinReg:
     def y_pred_test(self):
         return np.dot(self.wt, self.x_test) + self.bias
 
-    def model_accu_test(self):
-        cost = np.sum(np.square(self.y_test - self.y_pred_test()) // self.y_test)
-        accu = np.mean(np.sqrt(cost) // self.m) * 100 * (-1) + 100
-        print("The above model has ", accu, "% accuracy")
-        return accu
+    def cost_test(self):
+        cost = np.sum(np.square(self.y_test - self.y_pred_test()))
+        cost = np.mean(np.sqrt(cost))
+        return cost
 
     def cost_cv(self):  # cross-validation cost
         y = np.dot(self.wt, self.xcv)
@@ -120,7 +119,7 @@ class LogReg:
         self.y = np.array(data_out, dtype=np.float64)
         self.m = int(data_in.shape[0])  # No. of training exapmles
         self.lamb = int(lamb)
-        self.j = int(np.size(self.y) / self.y.shape[1])
+        self.j = int(np.size(self.y) / self.y.shape[0])
         self.l_rate = float(l_rate)
         try:
             self.col1 = int(data_in.shape[1]) + 1  # No. of features plus bias
@@ -141,10 +140,10 @@ class LogReg:
         self.wt2 = np.zeros((self.j, self.col1), dtype=np.float64)
         self.wt3 = np.zeros((self.j, 1), dtype=np.float64)
         self.temp = np.zeros(self.col1, dtype=np.float64)
+        self.y = self.y.T
         self.x_prod = np.prod(self.x, axis=0)
         self.x_prod = np.reshape(self.x_prod, (1, self.m))
-        self.xl_split = np.array_split(self.x,
-                                       2)  # dividing training dataset into training and cross validation dataset
+        self.xl_split = np.array_split(self.x, 2)  # dividing dataset into training and cross validation dataset
         self.xp_split = np.array_split(self.x_prod, 2)
         self.x = self.xl_split[0]
         self.xcv = self.xl_split[1]
@@ -193,14 +192,14 @@ class LogReg:
         self.wt2 = self.wt2 - self.l_rate * temp2
         self.wt3 = self.wt3 - self.l_rate * temp3
 
-    def train_model_lin(self, epoch):
+    def train_model_lin(self, epoch=1000):
         for i in range(epoch):
             self.y_pred_lin()
             self.cost_lin()
             self.update_lin()
         return self.wt1
 
-    def batch_train_lin(self, epoch):
+    def batch_train_lin(self, epoch=100):
         n = int(self.m / 50) + 1
         self.x_split1 = np.array_split(self.x, n, axis=1)
         self.y_split1 = np.array_split(self.y, n, axis=1)
@@ -234,7 +233,7 @@ class LogReg:
     def test_model(self, test_data_in, test_data_out):
         self.x_test = np.array(test_data_in,
                                dtype=np.float64)  # test_data_in=training input, test_data_out=training output
-        self.y_test = np.array(test_data_out, dtype=np.float64)
+        self.y_test = np.array(test_data_out, dtype=np.float64).T
         self.m2 = int(test_data_in.shape[0])  # No. of training exapmles
         self.j2 = int(np.size(self.y_test) / self.y_test.shape[1])
         try:
