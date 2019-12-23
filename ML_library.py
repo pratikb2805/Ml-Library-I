@@ -49,7 +49,7 @@ class LinReg:
         self.wt = self.wt - self.l_rate * self.temp
         self.bias -= np.sum(self.y_pred() - self.y) * self.l_rate / self.m
 
-    def train(self, epoch=1000):  # model training function with traditional..
+    def train(self, epoch=100):  # model training function with traditional..
         for j in range(int(epoch)):  # gradient descent
             self.y_pred()
             self.y_cost()
@@ -57,7 +57,7 @@ class LinReg:
             self.wt0 = self.wt
         return self.wt
 
-    def batch_train(self, epoch):  # model training function with batch ...
+    def batch_train(self, epoch=1000):  # model training function with batch ...
         n = int(self.m / 50) + 1  # gradient descent
 
         try:
