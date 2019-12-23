@@ -77,13 +77,13 @@ class LinReg:
         self.wt = np.zeros((1, self.col1), dtype=float)
         self.bias = 0.00
         epoch = np.arange(int(ll), int(ul), int(step))
-        accu = np.zeros(epoch.shape[0], dtype=float)
+        cost = np.zeros(epoch.shape[0], dtype=float)
         for i in range(epoch.shape[0]):
             self.train(epoch[i])
-            accu[i] = np.mean(np.square(self.y_pred() - self.y))
+            cost[i] = self.cost_cv()
         plt.xlabel = 'Epoch'
-        plt.ylabel = 'Accuracy'
-        plt.plot(epoch, accu)
+        plt.ylabel = 'Cost_CV'
+        plt.plot(epoch, cost)
 
     def test(self, test_data_in, test_data_out):
         self.x_test = np.array(test_data_in)
