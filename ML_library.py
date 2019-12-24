@@ -74,13 +74,14 @@ class LinReg:
                 self.y = np.array(self.y_split[i])
                 self.train(10)
 
-    def model_cost_vs_epoch(self, ll, ul, step):  # Plot showing accuracy of model vs epoch attained for taraining
+    def model_cost_vs_epoch(self, lr, ur, step):  # Plot showing accuracy of model vs epoch attained for taraining
         self.wt = np.zeros((1, self.col1), dtype=float)
         self.bias = 0.00
-        epoch = np.arange(int(ll), int(ul), int(step))
+        epoch = np.arange(int(lr), int(ur), int(step))
         cost = np.zeros(epoch.shape[0], dtype=float)
+        self.train(int(lr))
         for i in range(epoch.shape[0]):
-            self.train(epoch[i])
+            self.train(int(step))
             cost[i] = self.cost_cv()
         plt.xlabel = 'Epoch'
         plt.ylabel = 'Cost_CV'
