@@ -10,7 +10,7 @@ This library contains separate classes containing functions implementing differe
                                         (in form of Array, list OR matrix containing each training example in a new row)
             *data_out->                 output training data ( 1-D array, series or list)
             *lamb->                     L2 regularisation coefficient, default to zero
-            *l_rate->                   Learning rate of algorithm, default to 0.01data_in
+            *l_rate->                   Learning rate of algorithm, default to 0.01
 
     -y_pred()->                         Prediction function for calculating predicted values of output.
     -y_cost()->                         Cost function for calculating Mean Squared Error ie. ** J_train**
