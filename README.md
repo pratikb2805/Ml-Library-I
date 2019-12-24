@@ -43,6 +43,8 @@ This library contains separate classes containing functions implementing differe
    - [ ]  predict1(x)->                      Function implements the model on 1D data example ** one at a time **
 
 ##   LogReg
+
+     A linear hypothesis based model.
      
      Constructor:
          object_name= LogReg(LinReg(data_in, data_out, lamb, l_rate))
@@ -51,13 +53,13 @@ This library contains separate classes containing functions implementing differe
                                                 new row)
 -             *data_out->                         output training data
                                                 ( 1-D array, series or list in case of single-class output)
-                                                ( 2-D array,list or dataframe consisting of output data with each
+                                                ( 2-D array,list consisting of output data with each
                                                 example a new row)
 -             *lamb->                             L2 regularisation coefficient.
                                                 default set to 0.
 -             *l_rate->                           Learning rate of algorithm,
                                                 default set to 0.01.
-     A) Linear Hypothesis:
+     
       
         y_pred_lin()->                             Prediction function for linear hypothesis based model.
         y_cost_lin()->                             Cost function for linear hypothesis with L2 regularisation.
@@ -74,22 +76,9 @@ This library contains separate classes containing functions implementing differe
 
 
 
-    B) Quadratic Hypothesis
-        
-        -y_pred_quad()->                            Prediction function for quadratic hypothesis based model.
-        -y_cost_quad()->                            Cost function for qquadratic hypothesis with L2 regularisation.
-        -update_quad()->                            Function to update the weight matrix according to process of
-                                                    Gradient Descent. *
-        -train_model_quad(epoch)->                  Training function employing traditional gradient descent.
-                                                    epoch= No. of iterations to be made while training the model.
-                                                    Default to 1000.
-        -batch_train_quad(epoch)->                  Training function employing batch gradient descent.
-                                                    epoch= No. of iterations to be made while training the model.
-                                                    Default to 100.
-        -cost_cv_quad()                             Cross validation cost function for calculating Mean Squared Error
-                                                    ie. **J_cv**.
+    
 
-        -test_model(test_data_in,test_data_out)->  ** COMMON TO BOTH HYPOTHESES **
+        -test_model(test_data_in,test_data_out)->  
                                                     Function accepting for testing model over data.
                 *test_data_in->                     input testing data
                                                     (in form of Array, list OR matrix containing each training example
@@ -97,11 +86,11 @@ This library contains separate classes containing functions implementing differe
                 *test_data_out->                    output testing data
                                                     (in form of Array, list OR matrix containing each training example
                                                     in a new row)
-        -y_test_pred()->                            **COMMON TO BOTH HYPOTHESES**
+        -y_test_pred()->                            
                                                     Function for predicting the output corresponding to the testing data
-        -y_test_accu()->                            **COMMON TO BOTH HYPOTHESES**
+        -y_test_accu()->                            
                                                     Gives % accuracy of model over training dataset
-        -model_accu_vs_epoch(lr, ur, step)->        **COMMON TO BOTH HYPOTHESES**
+        -model_accu_vs_epoch(lr, ur, step)->        
                                                     Function which plots graph of model accuracy over trainiing dataset
                                                     vs epoch(in train() function)
                 *lr->                               Lower range of epoch
