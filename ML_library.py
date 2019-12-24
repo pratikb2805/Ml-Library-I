@@ -81,7 +81,7 @@ class LinReg:
         cost = np.zeros(epoch.shape[0], dtype=float)
         self.train(int(lr))
         for i in range(epoch.shape[0]):
-            self.train(int(step))
+            self.batch_train(int(step))
             cost[i] = self.cost_cv()
         plt.xlabel = 'Epoch'
         plt.ylabel = 'Cost_CV'
@@ -98,7 +98,7 @@ class LinReg:
         return np.dot(self.wt, self.x_test) + self.bias
 
     def cost_test(self):
-        cost = np.sum(np.square(self.y_test - self.y_pred_test()))
+        cost = np.mean(np.square(self.y_test - self.y_pred_test()))
         cost = np.mean(np.sqrt(cost))
         return cost
 
@@ -119,68 +119,44 @@ class LogReg:
         self.x = np.array(data_in, dtype=np.float64)  # data_in=training input, data_out=training output
         self.y = np.array(data_out, dtype=np.float64)
         self.m = int(data_in.shape[0])  # No. of training exapmles
-        self.lamb = int(lamb)
+        self.lamb = float(lamb)
         self.j = int(np.size(self.y) / self.y.shape[0])
         self.l_rate = float(l_rate)
         try:
-            self.col1 = int(data_in.shape[1]) + 1  # No. of features plus bias
+            self.col1 = int(data_in.shape[1])  # No. of features plus bias
         except IndexError:
-            self.col1 = 2  # For one feature training set
-
-        try:
-            one = np.ones((1, self.m), dtype=np.float64)
-            self.x = np.ndarray.flatten(self.x, order='C')
-            self.x = np.concatenate((one, self.x.T), axis=0)
-            self.x = np.reshape(self.x, (self.col1, self.m))
-        except:
-            one = np.ones(self.m, dtype=np.float64)
-            self.x = np.concatenate((one, self.x), axis=0)
-            self.x = np.reshape(self.x, (self.col1, self.m))
-
+            self.col1 = 1  # For one feature training set
+        self.bias = np.zeros((self.j, 1), dtype=np.float64)
         self.wt1 = np.zeros((self.j, self.col1), dtype=np.float64)  # defining weights matrix OR array
-        self.wt2 = np.zeros((self.j, self.col1), dtype=np.float64)
-        self.wt3 = np.zeros((self.j, 1), dtype=np.float64)
-        self.temp = np.zeros(self.col1, dtype=np.float64)
-        self.y = self.y.T
-        self.x_prod = np.prod(self.x, axis=0)
-        self.x_prod = np.reshape(self.x_prod, (1, self.m))
-        self.xl_split = np.array_split(self.x, 2)  # dividing dataset into training and cross validation dataset
-        self.xp_split = np.array_split(self.x_prod, 2)
-        self.x = self.xl_split[0]
-        self.xcv = self.xl_split[1]
-        self.x_prodcv = self.xp_split[1]
-        self.x_prod = self.xp_split[0]
-        self.y_split = np.array_split(self.y, 2)
-        self.y = self.y_split[0]
-        self.ycv = self.y_split[1]
+        self.temp = np.zeros((self.j, self.col1), dtype=np.float64)
+        self.xs = np.array_split(self.x, 2)
+        self.ys = np.array_split(self.y, 2)
+        self.x = np.transpose(np.array(self.xs[0]))
+        self.xcv = np.transpose(np.array(self.xs[1]))
+        self.y = np.transpose(np.array(self.ys[0]))
+        self.ycv = np.transpose(np.array(self.ys[1]))
+
+
+
 
     def y_pred_lin(self):  # simple linear hypothesis
-        t = np.empty((self.j, self.m), dtype=np.float64)
         t = np.matmul(self.wt1, self.x)
+        for i in range(t.shape[0]):
+            t[i, :] += self.bias[i, 0]
         t = t * (-1)
         return 1 / (1 + np.exp(t))
-
-    def y_pred_quad(self):
-        t = np.matmul(self.wt1, self.x) + np.matmul(self.wt2, np.square(self.x)) + np.matmul(self.wt3, self.x_prod)
-        return 1 / (1 + np.e ** -t)
-
-    def cost_quad(self):
-        return sum(
-            (-np.dot(self.y, np.log(self.y_pred_quad()).T)) - np.dot((1 - self.y),
-                                                                     np.log(1 - self.y_pred_quad()).T)) + np.sum(
-            np.square(self.wt1)) * self.lamb / 2 / self.m + np.sum(
-            np.square(self.wt2)) * self.lamb / 2 / self.m + np.sum(
-            np.square(self.wt3)) * self.lamb / 2 / self.m
 
     def cost_lin(self):
         t1 = (-np.dot(self.y, np.log(self.y_pred_lin()).T))
         t2 = - np.dot((1 - self.y), np.log(1 - self.y_pred_lin()).T)
         t3 = (np.square(self.wt1)) * self.lamb / 2 / self.m
-        return sum(t1 + t2) + np.sum(t3)
+        return sum(t1 + t2) + np.sum(t3) + np.sum(np.square(self.bias)) * self.lamb / self.m
 
     def update_lin(self):
         temp = np.dot((self.y_pred_lin() - self.y), self.x.T) / self.m + self.wt1 * self.lamb / self.m
+        temp2 = np.mean(self.y_pred_lin() - self.y, axis=1)
         self.wt1 = self.wt1 - self.l_rate * temp
+        self.bias -= temp2 * self.l_rate
 
     def update_quad(self):
         t1 = np.dot((self.y_pred_quad() - self.y), self.x.T) / self.x.shape[1]
@@ -202,10 +178,16 @@ class LogReg:
 
     def batch_train_lin(self, epoch=100):
         n = int(self.m / 50) + 1
-        self.x_split1 = np.array_split(self.x, n, axis=1)
-        self.y_split1 = np.array_split(self.y, n, axis=1)
+        try:
+            self.x_split1 = np.array_split(self.x, n, axis=1)
+        except:
+            self.x_split1 = np.array_split(self.x, n)
+        try:
+            self.y_split1 = np.array_split(self.y, n, axis=1)
+        except:
+            self.y_split1 = np.array_split(self.y, n)
         for j in range(int(epoch)):
-            for i in range(n):
+            for i in range(n - 1):
                 self.x = np.array(self.x_split1[i])
                 self.y = np.array(self.y_split1[i])
                 self.train_model_lin(10)
