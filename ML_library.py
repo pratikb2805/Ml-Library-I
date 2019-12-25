@@ -208,13 +208,13 @@ class LogReg:
         plt.ylabel = 'Accuracy'
         plt.plot(epoch, accu)
 
-    def cv_pred(self):
+    def cv_pred(self):  # predicting output over cross validation dataset
         t = np.matmul(self.wt1, self.xcv)
         for i in range(t.shape[0]):
             t[i, :] += self.bias[i, 0]
         return 1 / (1 + np.exp(-t))
 
-    def cost_cv(self):  # cross validation cost on quadratic hypothesis
+    def cost_cv(self):  # cross validation cost
         cost = np.mean(np.square(self.ycv - self.cv_pred()))
         return cost
 
