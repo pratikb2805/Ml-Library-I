@@ -217,3 +217,5 @@ class LogReg:
     def cost_cv(self):  # cross validation cost on quadratic hypothesis
         cost = np.mean(np.square(self.ycv - self.cv_pred()))
         return cost
+
+
