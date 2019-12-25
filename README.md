@@ -44,7 +44,9 @@ This library contains separate classes containing functions implementing differe
 
 ##   LogReg
 
-     A linear hypothesis based model.
+     A linear hypothesis based model. 
+     
+     Y=sigm(W*X+b)
      
      Constructor:
          object_name= LogReg(LinReg(data_in, data_out, lamb, l_rate))
@@ -61,17 +63,17 @@ This library contains separate classes containing functions implementing differe
                                                 default set to 0.01.
      
       
-        y_pred_lin()->                             Prediction function for linear hypothesis based model.
-        y_cost_lin()->                             Cost function for linear hypothesis with L2 regularisation.
-        update_lin()->                             Function to update the weight matrix according to process of
+        y_pred()->                             Prediction function for linear hypothesis based model.
+        y_cost()->                             Cost function for linear hypothesis with L2 regularisation.
+        update()->                             Function to update the weight matrix according to process of
                                                     Gradient Descent.
         train_model_lin(epoch)->                   Training function employing traditional gradient descent.
                                                     epoch= No. of iterations to be made while training the model.
                                                     Default to 1000.
-        batch_train_lin(epoch)->                   Training function employing batch gradient descent.
+        batch_train(epoch)->                   Training function employing batch gradient descent.
                                                     epoch= No. of iterations to be made while training the model.
                                                     Default to 100.
-        cost_cv_lin()                              Cross validation cost function for calculating Mean Squared Error
+        cost_cv()                              Cross validation cost function for calculating Mean Squared Error
                                                     ie. **J_cv**.
 
 
