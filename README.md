@@ -20,10 +20,10 @@ This library contains separate classes containing functions implementing differe
    - [ ]  y_pred()->                         Prediction function for calculating predicted values of output.    
    - [ ]  y_cost()->                         Cost function for calculating Mean Squared Error ie. ** J_train**   
    - [ ]  update()->                         Function to update the weight matrix according to process of Gradient Descent.
-   - [ ]  train(epoch)->                     Training function employing traditional gradient descent.
+   - [ ]  train(epoch)->                     Training function employing batch gradient descent.
                                             
                                             epoch= No. of iterations to be made while training the model. Default to 1000.
-   - [ ]  batch_train(epoch)->                  Training function employing batch gradient descent.
+   - [ ]  batch_train(epoch)->                  Training function employing mini batch gradient descent.
                                             
                                             epoch= No. of iterations to be made while training the model. Default to 100.
    - [ ]  cost_cv()->                           Cross validation cost function for calculating Mean Squared Error ie. **J_cv**.
@@ -67,10 +67,10 @@ This library contains separate classes containing functions implementing differe
         y_cost()->                             Cost function for linear hypothesis with L2 regularisation.
         update()->                             Function to update the weight matrix according to process of
                                                     Gradient Descent.
-        train_model_lin(epoch)->                   Training function employing traditional gradient descent.
+        train_model_lin(epoch)->                   Training function employing batch gradient descent.
                                                     epoch= No. of iterations to be made while training the model.
                                                     Default to 1000.
-        batch_train(epoch)->                   Training function employing batch gradient descent.
+        batch_train(epoch)->                   Training function employing mini batch gradient descent.
                                                     epoch= No. of iterations to be made while training the model.
                                                     Default to 100.
         cost_cv()                              Cross validation cost function for calculating Mean Squared Error

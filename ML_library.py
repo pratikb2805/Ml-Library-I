@@ -59,7 +59,7 @@ class LinReg:
             self.wt0 = self.wt
         return self.wt
 
-    def batch_train(self, epoch=100):  # model training function with batch ...
+    def batch_train(self, epoch=100):  # model training function with mini batch ...
         n = int(self.m / 50) + 1  # gradient descent
 
         try:
@@ -76,7 +76,7 @@ class LinReg:
                 self.y = np.array(self.y_split[i])
                 self.train(10)
 
-    def model_cost_vs_epoch(self, lr, ur, step):  # Plot showing accuracy of model vs epoch attained for taraining
+    def model_cost_vs_epoch(self, lr, ur, step):  # Plot showing accuracy of model vs epoch attained for training
         self.wt = np.zeros((1, self.col1), dtype=float)
         self.bias = 0.00
         epoch = np.arange(int(lr), int(ur), int(step))
