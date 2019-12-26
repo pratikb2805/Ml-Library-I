@@ -43,7 +43,7 @@ class LinReg:
         rss = np.zeros(self.col1, dtype=np.float64)
         rss = self.y - self.y_pred()
         rss = np.sum(np.square(rss)) + np.sum(np.square(self.wt)) * m + (self.bias ** 2) * m
-        return np.mean(rss)
+        return np.mean(rss) / 2
 
     def update(self):  # gradient descent
         self.temp = np.zeros(self.col1, dtype=np.float64)
@@ -101,12 +101,12 @@ class LinReg:
 
     def cost_test(self):
         cost = np.mean(np.square(self.y_test - self.y_pred_test()))
-        cost = np.mean(np.sqrt(cost))
+        cost = np.mean(cost) / 2
         return cost
 
     def cost_cv(self):  # cross-validation cost
         y = np.dot(self.wt, self.xcv)
-        cost = np.mean(np.square(y - self.ycv))
+        cost = np.mean(np.square(y - self.ycv)) / 2
         return cost
 
     def predict1(self, x):
@@ -140,7 +140,7 @@ class LogReg:
 
         self.bias = np.zeros((self.j, 1), dtype=np.float64)
 
-    def y_pred(self):  # simple linear hypothesis
+    def y_pred(self):  # simple linear hypothesis' prediction
         t = np.matmul(self.wt1, self.x)
         for i in range(t.shape[0]):
             t[i, :] += self.bias[i, 0]
@@ -148,8 +148,8 @@ class LogReg:
         return 1 / (1 + np.exp(t))
 
     def cost(self):
-        t1 = (-np.dot(self.y, np.log(self.y_pred()).T))
-        t2 = - np.dot((1 - self.y), np.log(1 - self.y_pred()).T)
+        t1 = (-np.dot(self.y, np.log(self.y_pred()).T)) / self.m
+        t2 = - np.dot((1 - self.y), np.log(1 - self.y_pred()).T) / self.m
         t3 = (np.square(self.wt1)) * self.lamb / 2 / self.m
         return sum(t1 + t2) + np.sum(t3) + np.sum(np.square(self.bias)) * self.lamb / self.m
 
@@ -159,14 +159,14 @@ class LogReg:
         self.wt1 = self.wt1 - self.l_rate * temp * self.lamb
         self.bias = self.bias - temp2 * self.l_rate
 
-    def train(self, epoch=1000):
+    def train(self, epoch=1000):  # training function employing batch gradient descent
         for i in range(epoch):
             self.y_pred()
             self.cost()
             self.update()
         return self.wt1
 
-    def batch_train(self, epoch=100):
+    def batch_train(self, epoch=100):  # training function employing mini-batch gradient descent
         n = int(self.m / 50) + 1
         try:
             self.x_split1 = np.array_split(self.x, n, axis=1)
@@ -183,8 +183,8 @@ class LogReg:
                 self.train(10)
 
     def test_model(self, test_data_in, test_data_out):
-        self.x_test = np.array(test_data_in,
-                               dtype=np.float64).T  # test_data_in=training input, test_data_out=training output
+        self.x_test = np.array(test_data_in, dtype=np.float64).T
+        # test_data_in=training input, test_data_out=training output
         self.y_test = np.array(test_data_out, dtype=np.float64).T
 
     def y_test_pred(self):
@@ -216,48 +216,59 @@ class LogReg:
         return 1 / (1 + np.exp(-t))
 
     def cost_cv(self):  # cross validation cost
-        cost = np.mean(np.square(self.ycv - self.cv_pred()))
+        cost = np.mean(np.square(self.ycv - self.cv_pred())) / 2
         return cost
 
 
 class KNN:
-    def __init__(model, dataset, query):
-        model.x = np.array(dataset)
-        m = model.x.shape[0]
-        model.y = np.array(query)
+    def __init__(self, dataset, query):
+        self.x = np.array(dataset)
+        m = self.x.shape[0]
+        self.y = np.array(query)
         try:
-            n = model.x.shape[1]
+            n = self.x.shape[1]
         except:
             n = 1
-        if model.x.ndim == 1:  # if dataset is 1d, then making it two dimensional
-            model.x = model.x[:, np.newaxis]
+        if self.x.ndim == 1:  # if dataset is 1d, then making it two dimensional
+            self.x = self.x[:, np.newaxis]
         else:
             pass
 
         try:
-            model.row = model.x.shape[0]
-            model.col = model.x.shape[1]
+            self.row = self.x.shape[0]
+            self.col = self.x.shape[1]
         except:
-            model.row = model.x.shape[0]
-            model.col = 1
+            self.row = self.x.shape[0]
+            self.col = 1
 
-        z = np.arange(model.row)[:, np.newaxis]
-        y = np.zeros((model.row, 1), dtype=np.float64)
+        z = np.arange(self.row)[:, np.newaxis]
+        y = np.zeros((self.row, 1), dtype=np.float64)
         s = np.concatenate((z, y), axis=1)
-        model.dist = s  # creating distance matrix
+        self.dist = s  # creating distance matrix
 
-    def di(model):  # calculates distances
-        for i in range(model.row):
-            model.dist[i, 1] = np.sum(np.square(model.x[i, :] - model.y))
+    def di(self):  # calculates distances
+        for i in range(self.row):
+            self.dist[i, 1] = np.sum(np.square(self.x[i, :] - self.y))
 
-    def data_sort(model):
-        model.dist = model.dist[model.dist[:, 1].argsort()]
+    def data_sort(self):  # function sorting distances in increasing order
+        self.dist = self.dist[self.dist[:, 1].argsort()]
 
-    def out(model, k):  # return k nearest neighbours
-        model.di()
-        model.data_sort()
+    def out(self, k):  # return k nearest neighbours
+        self.di()
+        self.k = int(k)
+        self.data_sort()
         ans = []
         for i in range(int(k)):
-            ind = int(model.dist[i, 0])
+            ind = int(self.dist[i, 0])
             ans.append(ind)
+            self.ans = ans
         return ans
+
+    def di2(self):  # mean distance from neighbors
+        li = self.ans
+        li2 = []
+        sum1 = 0
+        for i in range(self.k):
+            sum1 += self.dist[i, 1]
+        sum1 = sum1 / self.k
+        return sum1

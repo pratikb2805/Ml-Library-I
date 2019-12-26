@@ -111,3 +111,5 @@ This library contains separate classes containing functions implementing differe
     -di():          Calculates distance of query from each member of dataset
     -data_sort()    Sorts distances keeping indices with them
     -out(k):        Returns a list containing indices of ** K ** nearest neighbors in dataset
+    -di2():         Returns average distance of query point from calculated neighbor points
+    
