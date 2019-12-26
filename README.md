@@ -98,3 +98,16 @@ This library contains separate classes containing functions implementing differe
                 *lr->                               Lower range of epoch
                 *ur->                               Upper range of epoch
                 *step->                             Increment in epoch
+
+## K-Nearest Neighbors:
+
+    -Constructor:
+        object_name=KNN(dataset, query)
+        dataset:    Data over which distances are to be calculated
+        query:      target query
+
+    Functions:
+
+    -di():          Calculates distance of query from each member of dataset
+    -data_sort()    Sorts distances keeping indices with them
+    -out(k):        Returns a list containing indices of ** K ** nearest neighbors in dataset

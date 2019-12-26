@@ -2,40 +2,43 @@
 import numpy as np
 import pandas as pd
 class KNN:
-    def __init__(self, dataset, query, k):
-        self.x = np.array(dataset)
-        m = self.x.shape[0]
+    def __init__(model, dataset, query):
+        model.x = np.array(dataset)
+        m = model.x.shape[0]
+        model.y = np.array(query)
         try:
-            n = self.x.shape[1]
+            n = model.x.shape[1]
         except:
-            m = 1
-        self.x = np.reshape(np.ndarray(self.x), (m, n))
-        self.y = np.array(query)
-        self.k = int(k)
+            n = 1
+        if model.x.ndim == 1:
+            model.x = model.x[:, np.newaxis]
+        else:
+            pass
+
         try:
-            self.row = self.x.shape[0]
-            self.col = self.x.shape[1]
+            model.row = model.x.shape[0]
+            model.col = model.x.shape[1]
         except:
-            self.row = self.x.shape[0]
-            self.col = 1
+            model.row = model.x.shape[0]
+            model.col = 1
 
-        z = np.arange(self.row)
-        y = np.zeros(self.row, dtype=float)
-        self.dist = np.concatenate((z, y), axis=0)
-        self.dist.reshape(self.row,2)
-        self.dist = np.transpose(self.dist)
+        z = np.arange(model.row)[:, np.newaxis]
+        y = np.zeros((model.row, 1), dtype=np.float64)
+        s = np.concatenate((z, y), axis=1)
+        model.dist = s
 
-    def di(self):
-        for i in range(self.row):
-            self.dist[i, 1] = np.sum(np.square(self.x[i, :] - self.y))
+    def di(model):
+        for i in range(model.row):
+            model.dist[i, 1] = np.sum(np.square(model.x[i, :] - model.y))
 
-    def data_sort(self):
-        self.dist = self.dist[self.dist[:, 1].argsort()]
+    def data_sort(model):
+        model.dist = model.dist[model.dist[:, 1].argsort()]
 
-    def out(self):
-        self.di()
-        self.data_sort()
-        ans = =[]
-        for i in range(self.k):
-            ans.append(self.x[self.dist[i, 0], :])
+    def out(model, k):
+        model.di()
+        model.data_sort()
+        ans = []
+        for i in range(int(k)):
+            ind = int(model.dist[i, 0])
+            ans.append(ind)
         return ans
