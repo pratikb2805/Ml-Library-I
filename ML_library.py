@@ -229,7 +229,7 @@ class KNN:
             n = model.x.shape[1]
         except:
             n = 1
-        if model.x.ndim == 1:
+        if model.x.ndim == 1:  # if dataset is 1d, then making it two dimensional
             model.x = model.x[:, np.newaxis]
         else:
             pass
@@ -244,16 +244,16 @@ class KNN:
         z = np.arange(model.row)[:, np.newaxis]
         y = np.zeros((model.row, 1), dtype=np.float64)
         s = np.concatenate((z, y), axis=1)
-        model.dist = s
+        model.dist = s  # creating distance matrix
 
-    def di(model):
+    def di(model):  # calculates distances
         for i in range(model.row):
             model.dist[i, 1] = np.sum(np.square(model.x[i, :] - model.y))
 
     def data_sort(model):
         model.dist = model.dist[model.dist[:, 1].argsort()]
 
-    def out(model, k):
+    def out(model, k):  # return k nearest neighbours
         model.di()
         model.data_sort()
         ans = []
