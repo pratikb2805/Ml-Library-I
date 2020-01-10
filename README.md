@@ -128,7 +128,7 @@ This library contains separate classes containing functions implementing differe
  ## Layers:
     -Constructor:
     
-   - layer_no= layers(no_of_neurons, no_of_rows_in_weight_matrix, no_of_columns_in_weight_matrix)
+      layer_no= layers(no_of_neurons, no_of_rows_in_weight_matrix, no_of_columns_in_weight_matrix)
    - Creates a object which represents a layer in the neural network(excluding input layer).
    - Has parameters like :
    - layer.a: Activations of neurons in matrix
@@ -149,5 +149,17 @@ This library contains separate classes containing functions implementing differe
    - `update():  `        Updates weights
    - `train(epoch):`      Repeates training action for **epoch** times
    -`implement(data_in)`: Predicts ouput for provided data_in(one at a time)
+<<<<<<< HEAD
 
     
+=======
+   
+   -To get error in any layer:
+       network_name.ly[layer_index].error
+  - To get error in any layer:
+      network_name.ly[layer_index].a
+      layer_index= 0 based index , -1 for output layer
+      
+-----------------------------------------------------------------The End----------------------------------------------------------------
+    
+>>>>>>> 860ecfed5f8f5a7d24a01a138dac6a9ff4c867ee
