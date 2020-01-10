@@ -148,6 +148,6 @@ This library contains separate classes containing functions implementing differe
    - `backprop():`        Backpropagation algorithm
    - `update():  `        Updates weights
    - `train(epoch):`      Repeates training action for **epoch** times
-   -`implement(data_in)`: Predicts ouput for provided data_in
+   -`implement(data_in)`: Predicts ouput for provided data_in(one at a time)
        
     
