@@ -20,13 +20,10 @@ class K_Means:
     def min_ind(self, x):
         k = np.where(x == np.ndarray.min(x))
         k1 = k[0]
-        k1.reshape(1, 1)
         return k1
 
     def li_init(self):
-        li = []
-        for i in range(self.k):
-            li.append([])
+        li = [[]] * self.k
         self.li = li
 
     def cluster(self):
@@ -37,7 +34,7 @@ class K_Means:
                 d = np.mean(np.square(self.data[i, :] - self.centre[j, :]))
                 di.append(d)
             di = np.array(di)
-            ind = int(self.min_ind(di))
+            ind = np.argmin(di)
             self.li[ind].append(self.data[i, :])
 
     def calc_centroid(self):
@@ -57,7 +54,7 @@ class K_Means:
         for i in range(self.k):
             filename.append("cluster" + str(i) + ".csv")
         for i in range(self.k):
-            with open(filename[i], 'wb', newline=' ') as f:
+            with open(filename[i], 'wb') as f:
                 writer = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-                writer.writeheader()
                 writer.writerow(self.li[i])
+        return 0

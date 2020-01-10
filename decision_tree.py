@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class Decision_Tree:
+class decisionTree:
     def __init__(self, data_in, data_out):
         try:
             self.data_in = data_in.tolist()
@@ -16,7 +16,7 @@ class Decision_Tree:
     def count(self, y):
         """
         THIS FUNCTION COUNTS THE OCCURANCES OF LABELS 
-        AND RETURNS THE DICTIONARdata_out
+        AND RETURNS THE DICTIONARY
         """
         li = {}
         for label in y:
@@ -25,7 +25,7 @@ class Decision_Tree:
             li[label] += 1
         return li
 
-    def gini_index(self, data_in, y):  # impurity a a given node between 1 and 0
+    def gini_index(self, data_in, y):  # impurity of a given node between 1 and 0
         counts = self.count(y)
         impurity = 1
         for label in counts:
@@ -124,9 +124,9 @@ class Decision_Tree:
             else:
                 return self.classify(Node.false_branch, example)
 
-    def predict(self, data_in_test):  # _________PREDICTS THE OUTPUT________#
+    def predict(self, test_data):  # _________PREDICTS THE OUTPUT________#
         y_pred = []
-        for example in data_in_test:
+        for example in test_data:
             d = self.classify(self.Node, example)
             v = list(d.values())
             k = list(d.keys())
