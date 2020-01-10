@@ -5,13 +5,6 @@ import pandas as pd
 np.seterr(over='ignore')
 
 
-def fxn():
-    warnings.warn("deprecated", DeprecationWarning)
-
-
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    fxn()
 
 np.seterr(divide='ignore', invalid='ignore')
 
