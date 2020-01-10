@@ -154,4 +154,7 @@ This library contains separate classes containing functions implementing differe
        network_name.ly[layer_index].error
   - To get error in any layer:
       network_name.ly[layer_index].a
+      layer_index= 0 based index , -1 for output layer
+      
+-----------------------------------------------------------------The End----------------------------------------------------------------
     
