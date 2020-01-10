@@ -107,9 +107,47 @@ This library contains separate classes containing functions implementing differe
         query:      target query
 
     Functions:
-
-    -di():          Calculates distance of query from each member of dataset
-    -data_sort()    Sorts distances keeping indices with them
-    -out(k):        Returns a list containing indices of ** K ** nearest neighbors in dataset
-    -di2():         Returns average distance of query point from calculated neighbor points
+    
+   -di():          Calculates distance of query from each member of dataset
+   -data_sort()    Sorts distances keeping indices with them
+   -out(k):        Returns a list containing indices of ** K ** nearest neighbors in dataset
+   -di2():         Returns average distance of query point from calculated neighbor points
+  
+ ## K-Means Clustering:
+   -Constructor:
+        object_name= K_Means(dataset, No_of_cluster)
+    
+    Functions:
+   -min_ind(x):        Returns the index of minimum elemnt in array x.
+    -li_init():         Initialises an empty list with k empty members
+    -cluster():         Cluster dataset according to initially initialised centroids
+    -calc_centroid():   Calculates centroids of points clustered in above step
+    -train(epoch):      Repeatedly runs above functions for **epoch** times
+    -load():            Stores clusters into csv files with names " cluster-i.csv" i varying from 1-k
+    
+ ## Layers:
+    -Constructor:
+    
+   - layer_no= layers(no_of_neurons, no_of_rows_in_weight_matrix, no_of_columns_in_weight_matrix)
+   - Creates a object which represents a layer in the neural network(excluding input layer).
+   - Has parameters like :
+   - layer.a: Activations of neurons in matrix
+   - layer.error: Error in the layer
+   - layer.wt= Weight matrix of layer
+ ## Neural Network:
+                        This file contains a modeule named **network** which can implement n-layered neural network .
+                        First create layers' list with above mentioned class and pass it into constructor.
+   -Constructor:
+   
+        network_name= network(data_in, data_out, layers_list, l_rate=0.01)
+        ** data_in and data_out must be presprocessed and data_out should only have 0 and 1 as it enrtries.**
+    
+    Functions:
+   - `forward(): `        Forward propagation of activations
+   - `cost(): `           Cost  function
+   - `backprop():`        Backpropagation algorithm
+   - `update():  `        Updates weights
+   - `train(epoch):`      Repeates training action for **epoch** times
+   -`implement(data_in)`: Predicts ouput for provided data_in
+       
     
