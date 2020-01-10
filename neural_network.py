@@ -33,7 +33,7 @@ class network:
         yy = np.array_split(self.y.T, 2)
         self.yt = yy[0].T
         self.yc = yy[1].T
-        self.l = int(len(li))
+        self.l = int(len(layers_list))
         self.ly = layers_list
         self.l_rate = float(l_rate)
         try:
