@@ -2,7 +2,7 @@
  
  Ml-Library-I for WoC 2.0
 
-This library contains separate classes containing functions implementing different machine learning.
+This library contains separate classes containing functions implementing different machine learning algorithms from scratch.
 ## LinReg
     
     Here only linear hypothesis dependent on all input features of input data is considered.    
@@ -161,5 +161,3 @@ This library contains separate classes containing functions implementing differe
       layer_index= 0 based index , -1 for output layer
       
 -----------------------------------------------------------------The End----------------------------------------------------------------
-    
->>>>>>> 860ecfed5f8f5a7d24a01a138dac6a9ff4c867ee
